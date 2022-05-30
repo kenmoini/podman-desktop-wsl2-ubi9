@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.zsh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Oh My ZSH has not been setup yet!  Run ~/zsh_setup.sh"
+fi
