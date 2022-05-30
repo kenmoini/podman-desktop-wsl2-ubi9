@@ -1,0 +1,42 @@
+## Import a Linux container tarbal as a WSL2 distribution
+
+$distributionName = "ubi9"
+$imageSource = "https://server.example.com/pub/ubi9-init-buildah-base.tar"
+$wsl_distro_root_path = "C:\WSLDistros\"
+
+## Check for WSL, install if not found
+if ((Get-Command "wsl.exe" -ErrorAction SilentlyContinue) -eq $null) 
+{
+  echo "Unable to find WSL installed!  Installing now..."
+  dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+  dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+  ## Set the default version to WSL2
+  wsl --set-default-version 2
+}
+
+## Create needed directories
+if (!(Test-Path $wsl_distro_root_path)) {
+  [void](New-Item -ItemType directory -Path $wsl_distro_root_path)
+}
+if (!(Test-Path $wsl_distro_root_path + "import\")) {
+  [void](New-Item -ItemType directory -Path $wsl_distro_root_path + "import\")
+}
+if (!(Test-Path $wsl_distro_root_path + $distributionName + "\")) {
+  [void](New-Item -ItemType directory -Path $wsl_distro_root_path + $distributionName + "\")
+}
+
+## Download the tar file
+Invoke-WebRequest -Uri $imageSource -OutFile $wsl_distro_root_path + "import\" + $distributionName + ".tar"
+
+## Check to see if the distro has already been imported
+if (!(Test-Path -Path $wsl_distro_root_path+$distributionName+"\ext4.vhdx" -PathType Leaf)) {
+  ## Import the Image
+  wsl --import $distributionName $wsl_distro_root_path+$distributionName+"\" $wsl_distro_root_path+"import\"+$distributionName+".tar"
+
+  ## Test the distribution - will launch the WSL2 distro with the whoami command
+  wsl -d $distributionName whoami
+
+  ## Optionally set it as a default
+  wsl --set-default $distributionName
+}

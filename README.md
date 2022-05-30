@@ -93,12 +93,15 @@ if (!(Test-Path $wsl_distro_root_path + $distributionName + "\")) {
 ## Download the tar file
 Invoke-WebRequest -Uri $imageSource -OutFile $wsl_distro_root_path + "import\" + $distributionName + ".tar"
 
-## Import the Image
-wsl --import $distributionName $wsl_distro_root_path+$distributionName+"\" $wsl_distro_root_path+"import\"+$distributionName+".tar"
+## Check to see if the distro has already been imported
+if (!(Test-Path -Path $wsl_distro_root_path+$distributionName+"\ext4.vhdx" -PathType Leaf)) {
+  ## Import the Image
+  wsl --import $distributionName $wsl_distro_root_path+$distributionName+"\" $wsl_distro_root_path+"import\"+$distributionName+".tar"
 
-## Test the distribution - will launch the WSL2 distro with the whoami command
-wsl -d $distributionName whoami
+  ## Test the distribution - will launch the WSL2 distro with the whoami command
+  wsl -d $distributionName whoami
 
-## Optionally set it as a default
-wsl --set-default $distributionName
+  ## Optionally set it as a default
+  wsl --set-default $distributionName
+}
 ```
