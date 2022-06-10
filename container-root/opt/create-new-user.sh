@@ -9,7 +9,8 @@ useradd $NEW_USERNAME; echo $NEW_USER_PASSWORD | passwd $NEW_USERNAME --stdin
 echo "Adding user to sudoers group 'wheel'..."
 usermod -aG wheel $NEW_USERNAME
 
-if [ "$(which zsh)" -eq "0" ]; then
+CHECK_ZSH=$(which zsh)
+if [ $? -eq 0 ]; then
   echo "Setting user shell to ZSH..."
   chsh --shell $(which zsh) $NEW_USERNAME
 fi
