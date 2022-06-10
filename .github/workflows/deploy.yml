@@ -50,35 +50,3 @@ jobs:
         file: ./Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-
-  # Compress the container image from the registry with buildah
-  buildah-package:
-    name: Package Container with Buildah
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    #needs: build-container
-    steps:
-      - name: Install buildah
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get -qq -y install buildah
-          buildah version
-
-      - name: Make the tar with buildah
-        run: |
-          cat > buildahimage.sh <<\EOF
-          CONTNR=$(buildah from quay.io/kenmoini/kenmoini.com:latest)
-          echo "CONTNR: $CONTNR"
-          MNTPNT=$(buildah mount $CONTNR)
-          echo "MNTPNT: $MNTPNT"
-          cd $MNTPNT
-          tar -cvf /tmp/wsl-distro-ubi9-import.tar .
-          EOF
-          chmod +x buildahimage.sh
-          buildah unshare ./buildahimage.sh
-
-      - name: Upload the artifact
-        uses: actions/upload-artifact@v3
-        with:
-          path: /tmp/wsl-distro-ubi9-import.tar
-          name: wsl-distro.tar
