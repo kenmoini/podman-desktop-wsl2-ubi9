@@ -56,9 +56,25 @@ jobs:
     name: Package Container with Buildah
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: build-container
     steps:
       - name: Install buildah
         run: |
           sudo apt-get update -qq
           sudo apt-get -qq -y install buildah
           buildah version
+
+      - name: Make the tar with buildah
+        run: |
+          CONTNR=$(buildah from registry.access.redhat.com/ubi9/ubi-init:9.0.0-16)
+          echo "CONTNR: $CONTNR"
+          MNTPNT=$(buildah mount $CONTNR)
+          echo "MNTPNT: $MNTPNT"
+          cd $MNTPNT
+          tar -cvf /tmp/wsl-distro.tar .
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: /tmp/wsl-distro.tar
+          name: wsl-distro.tar
