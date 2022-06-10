@@ -1,0 +1,4 @@
+docs/**
+.github/**
+README.md
+import_wsl_distro.ps
