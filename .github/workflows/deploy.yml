@@ -50,3 +50,15 @@ jobs:
         file: ./Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+  # Compress the container image from the registry with buildah
+  buildah-package:
+    name: Package Container with Buildah
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Install buildah
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get -qq -y install buildah
+          buildah version
