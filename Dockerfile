@@ -2,6 +2,9 @@ FROM registry.access.redhat.com/ubi9/ubi-init:9.0.0-16
 
 COPY container-root/ /
 
+## Rebuild system trusted root CA store
+RUN update-ca-trust
+
 ## Set Proxy Configuration environmental variables
 #ENV http_proxy http://192.168.51.1:3128
 #ENV https_proxy http://192.168.51.1:3128
@@ -24,9 +27,6 @@ RUN dnf update -y \
   --disablerepo='*' --enablerepo="ubi-9-baseos" --enablerepo="ubi-9-baseos-debug" --enablerepo="ubi-9-baseos-source" --enablerepo="ubi-9-appstream" --enablerepo="ubi-9-appstream-debug" --enablerepo="ubi-9-appstream-source" --enablerepo="ubi-9-codeready-builder" --enablerepo="ubi-9-codeready-builder-debug" --enablerepo="ubi-9-codeready-builder-source" \
   && dnf clean all \
   && rm -rf /var/cache/yum
-
-## Rebuild system trusted root CA store
-RUN update-ca-trust
 
 ## Install basic useful packages
 RUN dnf install -y wget sudo ncurses dnf-plugins-core dnf-utils passwd findutils nano openssl openssh-clients procps-ng git bash-completion jq util-linux-user cracklib-dicts \
