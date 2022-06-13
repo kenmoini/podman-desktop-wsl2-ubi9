@@ -96,7 +96,7 @@ RUN if [ "$INSTALL_NODEJS" = "true" ]; then \
   fi
 
 ## Install Podman
-RUN if [ "$INSTALL_PODMAN" = "true"]; then \
+RUN if [ "$INSTALL_PODMAN" = "true" ]; then \
     dnf install podman skopeo buildah crun slirp4netns fuse-overlayfs containernetworking-plugins iputils iproute -y \
     --disablerepo='*' --enablerepo="ubi-9-baseos" --enablerepo="ubi-9-baseos-debug" --enablerepo="ubi-9-baseos-source" --enablerepo="ubi-9-appstream" --enablerepo="ubi-9-appstream-debug" --enablerepo="ubi-9-appstream-source" --enablerepo="ubi-9-codeready-builder" --enablerepo="ubi-9-codeready-builder-debug" --enablerepo="ubi-9-codeready-builder-source" \
     && dnf clean all \
