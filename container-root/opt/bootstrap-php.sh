@@ -2,11 +2,21 @@
 
 set -x
 
+cat <<EOF >> proxy_pull.php
+<?php
+
+\$opts = array('http' => array('proxy' => '$HTTP_PROXY'));
+\$context = stream_context_create(\$opt);
+
+copy('https://getcomposer.org/installer', 'composer-setup.php', \$context);
+?>
+EOF
+
 if [ ! -f "/usr/local/bin/composer" ]; then
   echo "===== Installing Composer for PHP..."
 
   if [ ! -z "$HTTP_PROXY" ]; then
-    php -r "\$opts = array('http' => array('proxy' => '$HTTP_PROXY')); \$context = stream_context_create(\$opt); copy('https://getcomposer.org/installer', 'composer-setup.php', \$context);"
+    php proxy_pull.php
   else
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   fi
