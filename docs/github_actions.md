@@ -13,4 +13,4 @@ Create the following secrets:
 - `REGISTRY_USERNAME` eg, `kenmoini`
 - `REGISTRY_TOKEN` eg, `yourPasswordOrPersonalAccessToken`
 
-The container will be built & pushed whenever there is new code pushed to the `main` branch.
+The container will be built & pushed whenever there is new code pushed to the `notmain` branch, which means it's disabled by default unless you're pushing to the `notmain` branch.  Edit the `.github/workflows/deploy.yml` file to enable it by setting the `.on.push.branches` entry to `main`.

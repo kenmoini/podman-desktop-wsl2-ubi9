@@ -2,7 +2,9 @@ name: Build Container & Push to a Registry
 on:
   push:
     branches:
-      - main
+      #- main
+      ## Set the branch to a real branch
+      - notmain
 jobs:
   # Build the container
   build-container:
